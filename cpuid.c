@@ -124,39 +124,160 @@ void executeCpuidWithLeaf(uint32_t leaf, struct X64CpuidResult* result) {
 
 // Returns true if the brand index is valid and points brandString to the correct brand name
 // otherwise returns false
-bool x64TranslateBrandIndex(uint8_t brandIndex, char* brandString) {
+bool x64TranslateBrandIndex(uint8_t brandIndex, char** brandString) {
     if (brandIndex == 0 || brandIndex > 0x17) {
         return false;
     }
 
     switch (brandIndex) {
-    case 0x1: brandString = "Intel(R) Celeron(R) processor"; break;
-    case 0x2: brandString = "Intel(R) Pentium(R) III processor"; break;
+    case 0x1: *brandString = "Intel(R) Celeron(R) processor"; break;
+    case 0x2: *brandString = "Intel(R) Pentium(R) III processor"; break;
     // TODO: If processor signature = 000006B1h, then Intel(R) Celeron(R) processor
-    case 0x3: brandString = "Intel(R) Pentium(R) III Xeon(R) processor"; break;
-    case 0x4: brandString = "Intel(R) Pentium(R) III processor"; break;
-    case 0x6: brandString = "Mobile Intel(R) Pentium(R) III processor-M"; break;
-    case 0x7: brandString = "Mobile Intel(R) Celeron(R) processor"; break;
-    case 0x8: brandString = "Intel(R) Pentium(R) 4 processor"; break;
-    case 0x9: brandString = "Intel(R) Pentium(R) 4 processor"; break;
-    case 0xA: brandString = "Intel(R) Celeron(R) processor"; break;
+    case 0x3: *brandString = "Intel(R) Pentium(R) III Xeon(R) processor"; break;
+    case 0x4: *brandString = "Intel(R) Pentium(R) III processor"; break;
+    case 0x6: *brandString = "Mobile Intel(R) Pentium(R) III processor-M"; break;
+    case 0x7: *brandString = "Mobile Intel(R) Celeron(R) processor"; break;
+    case 0x8: *brandString = "Intel(R) Pentium(R) 4 processor"; break;
+    case 0x9: *brandString = "Intel(R) Pentium(R) 4 processor"; break;
+    case 0xA: *brandString = "Intel(R) Celeron(R) processor"; break;
     // TODO: If processor signature = 00000F13h, then Intel(R) Xeon(R) processor MP
-    case 0xB: brandString = "Intel(R) Xeon(R) processor"; break;
-    case 0xC: brandString = "Intel(R) Xeon(R) processor MP"; break;
+    case 0xB: *brandString = "Intel(R) Xeon(R) processor"; break;
+    case 0xC: *brandString = "Intel(R) Xeon(R) processor MP"; break;
     // TODO: If processor signature = 00000F13h, then Intel(R) Xeon(R) processor
-    case 0xE: brandString = "Mobile Intel(R) Pentium(R) 4 processor-M"; break;
-    case 0xF: brandString = "Mobile Intel(R) Celeron(R) processor"; break;
-    case 0x11: brandString = "Mobile Genuine Intel(R) processor"; break;
-    case 0x12: brandString = "Intel(R) Celeron(R) M processor"; break;
-    case 0x13: brandString = "Mobile Intel(R) Celeron(R) processor"; break;
-    case 0x14: brandString = "Intel(R) Celeron(R) processor"; break;
-    case 0x15: brandString = "Mobile Genuine Intel(R) processor"; break;
-    case 0x16: brandString = "Intel(R) Pentium(R) M processor"; break;
-    case 0x17: brandString = "Mobile Intel(R) Celeron(R) processor"; break;
+    case 0xE:  *brandString = "Mobile Intel(R) Pentium(R) 4 processor-M"; break;
+    case 0xF:  *brandString = "Mobile Intel(R) Celeron(R) processor"; break;
+    case 0x11: *brandString = "Mobile Genuine Intel(R) processor"; break;
+    case 0x12: *brandString = "Intel(R) Celeron(R) M processor"; break;
+    case 0x13: *brandString = "Mobile Intel(R) Celeron(R) processor"; break;
+    case 0x14: *brandString = "Intel(R) Celeron(R) processor"; break;
+    case 0x15: *brandString = "Mobile Genuine Intel(R) processor"; break;
+    case 0x16: *brandString = "Intel(R) Pentium(R) M processor"; break;
+    case 0x17: *brandString = "Mobile Intel(R) Celeron(R) processor"; break;
     }
 
     return true;
 }
+
+bool x64TranslateLeaf2Descriptor(uint8_t d, char** t) {
+    switch (d) {
+    case 0x01: *t = "TLB Instruction TLB: 4 KByte pages, 4-way set associative, 32 entries"; break;
+    case 0x02: *t = "TLB Instruction TLB: 4 MByte pages, fully associative, 2 entries"; break;
+    case 0x03: *t = "TLB Data TLB: 4 KByte pages, 4-way set associative, 64 entries"; break;
+    case 0x04: *t = "TLB Data TLB: 4 MByte pages, 4-way set associative, 8 entries"; break;
+    case 0x05: *t = "TLB Data TLB1: 4 MByte pages, 4-way set associative, 32 entries"; break;
+    case 0x06: *t = "Cache 1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size"; break;
+    case 0x08: *t = "Cache 1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size"; break;
+    case 0x09: *t = "Cache 1st-level instruction cache: 32KBytes, 4-way set associative, 64 byte line size"; break;
+    case 0x0A: *t = "Cache 1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size"; break;
+    case 0x0B: *t = "TLB Instruction TLB: 4 MByte pages, 4-way set associative, 4 entries"; break;
+    case 0x0C: *t = "Cache 1st-level data cache: 16 KBytes, 4-way set associative, 32 byte line size"; break;
+    case 0x0D: *t = "Cache 1st-level data cache: 16 KBytes, 4-way set associative, 64 byte line size"; break;
+    case 0x0E: *t = "Cache 1st-level data cache: 24 KBytes, 6-way set associative, 64 byte line size"; break;
+    case 0x1D: *t = "Cache 2nd-level cache: 128 KBytes, 2-way set associative, 64 byte line size"; break;
+    case 0x21: *t = "Cache 2nd-level cache: 256 KBytes, 8-way set associative, 64 byte line size"; break;
+    case 0x22: *t = "Cache 3rd-level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector"; break;
+    case 0x23: *t = "Cache 3rd-level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector"; break;
+    case 0x24: *t = "Cache 2nd-level cache: 1 MBytes, 16-way set associative, 64 byte line size"; break;
+    case 0x25: *t = "Cache 3rd-level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector"; break;
+    case 0x29: *t = "Cache 3rd-level cache: 4 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector"; break;
+    case 0x2C: *t = "Cache 1st-level data cache: 32 KBytes, 8-way set associative, 64 byte line size"; break;
+    case 0x30: *t = "Cache 1st-level instruction cache: 32 KBytes, 8-way set associative, 64 byte line size"; break;
+    case 0x40: *t = "Cache No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache"; break;
+    case 0x41: *t = "Cache 2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size"; break;
+    case 0x42: *t = "Cache 2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size"; break;
+    case 0x43: *t = "Cache 2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size"; break;
+    case 0x44: *t = "Cache 2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size"; break;
+    case 0x45: *t = "Cache 2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size"; break;
+    case 0x46: *t = "Cache 3rd-level cache: 4 MByte, 4-way set associative, 64 byte line size"; break;
+    case 0x47: *t = "Cache 3rd-level cache: 8 MByte, 8-way set associative, 64 byte line size"; break;
+    case 0x48: *t = "Cache 2nd-level cache: 3MByte, 12-way set associative, 64 byte line size"; break;
+    case 0x49: *t = "Cache 3rd-level cache: 4MB, 16-way set associative, 64-byte line size (Intel Xeon processor MP, Family 0FH, Model 06H); 2nd-level cache: 4 MByte, 16-way set associative, 64 byte line size"; break;
+    case 0x4A: *t = "Cache 3rd-level cache: 6MByte, 12-way set associative, 64 byte line size"; break;
+    case 0x4B: *t = "Cache 3rd-level cache: 8MByte, 16-way set associative, 64 byte line size"; break;
+    case 0x4C: *t = "Cache 3rd-level cache: 12MByte, 12-way set associative, 64 byte line size"; break;
+    case 0x4D: *t = "Cache 3rd-level cache: 16MByte, 16-way set associative, 64 byte line size"; break;
+    case 0x4E: *t = "Cache 2nd-level cache: 6MByte, 24-way set associative, 64 byte line size"; break;
+    case 0x4F: *t = "TLB Instruction TLB: 4 KByte pages, 32 entries"; break;
+    case 0x50: *t = "TLB Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries"; break;
+    case 0x51: *t = "TLB Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries"; break;
+    case 0x52: *t = "TLB Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries"; break;
+    case 0x55: *t = "TLB Instruction TLB: 2-MByte or 4-MByte pages, fully associative, 7 entries"; break;
+    case 0x56: *t = "TLB Data TLB0: 4 MByte pages, 4-way set associative, 16 entries"; break;
+    case 0x57: *t = "TLB Data TLB0: 4 KByte pages, 4-way associative, 16 entries"; break;
+    case 0x59: *t = "TLB Data TLB0: 4 KByte pages, fully associative, 16 entries"; break;
+    case 0x5A: *t = "TLB Data TLB0: 2 MByte or 4 MByte pages, 4-way set associative, 32 entries"; break;
+    case 0x5B: *t = "TLB Data TLB: 4 KByte and 4 MByte pages, 64 entries"; break;
+    case 0x5C: *t = "TLB Data TLB: 4 KByte and 4 MByte pages,128 entries"; break;
+    case 0x5D: *t = "TLB Data TLB: 4 KByte and 4 MByte pages,256 entries"; break;
+    case 0x60: *t = "Cache 1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size"; break;
+    case 0x61: *t = "TLB Instruction TLB: 4 KByte pages, fully associative, 48 entries"; break;
+    case 0x63: *t = "TLB Data TLB: 2 MByte or 4 MByte pages, 4-way set associative, 32 entries and a separate array with 1 GByte pages, 4-way set associative, 4 entries"; break;
+    case 0x64: *t = "TLB Data TLB: 4 KByte pages, 4-way set associative, 512 entries"; break;
+    case 0x66: *t = "Cache 1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size"; break;
+    case 0x67: *t = "Cache 1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size"; break;
+    case 0x68: *t = "Cache 1st-level data cache: 32 KByte, 4-way set associative, 64 byte line size"; break;
+    case 0x6A: *t = "Cache uTLB: 4 KByte pages, 8-way set associative, 64 entries"; break;
+    case 0x6B: *t = "Cache DTLB: 4 KByte pages, 8-way set associative, 256 entries"; break;
+    case 0x6C: *t = "Cache DTLB: 2M/4M pages, 8-way set associative, 128 entries"; break;
+    case 0x6D: *t = "Cache DTLB: 1 GByte pages, fully associative, 16 entries"; break;
+    case 0x70: *t = "Cache Trace cache: 12 K-μop, 8-way set associative"; break;
+    case 0x71: *t = "Cache Trace cache: 16 K-μop, 8-way set associative"; break;
+    case 0x72: *t = "Cache Trace cache: 32 K-μop, 8-way set associative"; break;
+    case 0x76: *t = "TLB Instruction TLB: 2M/4M pages, fully associative, 8 entries"; break;
+    case 0x78: *t = "Cache 2nd-level cache: 1 MByte, 4-way set associative, 64byte line size"; break;
+    case 0x79: *t = "Cache 2nd-level cache: 128 KByte, 8-way set associative, 64 byte line size, 2 lines per sector"; break;
+    case 0x7A: *t = "Cache 2nd-level cache: 256 KByte, 8-way set associative, 64 byte line size, 2 lines per sector"; break;
+    case 0x7B: *t = "Cache 2nd-level cache: 512 KByte, 8-way set associative, 64 byte line size, 2 lines per sector"; break;
+    case 0x7C: *t = "Cache 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size, 2 lines per sector"; break;
+    case 0x7D: *t = "Cache 2nd-level cache: 2 MByte, 8-way set associative, 64byte line size"; break;
+    case 0x7F: *t = "Cache 2nd-level cache: 512 KByte, 2-way set associative, 64-byte line size"; break;
+    case 0x80: *t = "Cache 2nd-level cache: 512 KByte, 8-way set associative, 64-byte line size"; break;
+    case 0x82: *t = "Cache 2nd-level cache: 256 KByte, 8-way set associative, 32 byte line size"; break;
+    case 0x83: *t = "Cache 2nd-level cache: 512 KByte, 8-way set associative, 32 byte line size"; break;
+    case 0x84: *t = "Cache 2nd-level cache: 1 MByte, 8-way set associative, 32 byte line size"; break;
+    case 0x85: *t = "Cache 2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size"; break;
+    case 0x86: *t = "Cache 2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size"; break;
+    case 0x87: *t = "Cache 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size"; break;
+    case 0xA0: *t = "DTLB DTLB: 4k pages, fully associative, 32 entries"; break;
+    case 0xB0: *t = "TLB Instruction TLB: 4 KByte pages, 4-way set associative, 128 entries"; break;
+    case 0xB1: *t = "TLB Instruction TLB: 2M pages, 4-way, 8 entries or 4M pages, 4-way, 4 entries"; break;
+    case 0xB2: *t = "TLB Instruction TLB: 4KByte pages, 4-way set associative, 64 entries"; break;
+    case 0xB3: *t = "TLB Data TLB: 4 KByte pages, 4-way set associative, 128 entries"; break;
+    case 0xB4: *t = "TLB Data TLB1: 4 KByte pages, 4-way associative, 256 entries"; break;
+    case 0xB5: *t = "TLB Instruction TLB: 4KByte pages, 8-way set associative, 64 entries"; break;
+    case 0xB6: *t = "TLB Instruction TLB: 4KByte pages, 8-way set associative, 128 entries"; break;
+    case 0xBA: *t = "TLB Data TLB1: 4 KByte pages, 4-way associative, 64 entries"; break;
+    case 0xC0: *t = "TLB Data TLB: 4 KByte and 4 MByte pages, 4-way associative, 8 entries"; break;
+    case 0xC1: *t = "STLB Shared 2nd-Level TLB: 4 KByte/2MByte pages, 8-way associative, 1024 entries"; break;
+    case 0xC2: *t = "DTLB DTLB: 4 KByte/2 MByte pages, 4-way associative, 16 entries"; break;
+    case 0xC3: *t = "STLB Shared 2nd-Level TLB: 4 KByte /2 MByte pages, 6-way associative, 1536 entries. Also 1GBbyte pages, 4-way, 16 entries."; break;
+    case 0xC4: *t = "DTLB DTLB: 2M/4M Byte pages, 4-way associative, 32 entries"; break;
+    case 0xCA: *t = "STLB Shared 2nd-Level TLB: 4 KByte pages, 4-way associative, 512 entries"; break;
+    case 0xD0: *t = "Cache 3rd-level cache: 512 KByte, 4-way set associative, 64 byte line size"; break;
+    case 0xD1: *t = "Cache 3rd-level cache: 1 MByte, 4-way set associative, 64 byte line size"; break;
+    case 0xD2: *t = "Cache 3rd-level cache: 2 MByte, 4-way set associative, 64 byte line size"; break;
+    case 0xD6: *t = "Cache 3rd-level cache: 1 MByte, 8-way set associative, 64 byte line size"; break;
+    case 0xD7: *t = "Cache 3rd-level cache: 2 MByte, 8-way set associative, 64 byte line size"; break;
+    case 0xD8: *t = "Cache 3rd-level cache: 4 MByte, 8-way set associative, 64 byte line size"; break;
+    case 0xDC: *t = "Cache 3rd-level cache: 1.5 MByte, 12-way set associative, 64 byte line size"; break;
+    case 0xDD: *t = "Cache 3rd-level cache: 3 MByte, 12-way set associative, 64 byte line size"; break;
+    case 0xDE: *t = "Cache 3rd-level cache: 6 MByte, 12-way set associative, 64 byte line size"; break;
+    case 0xE2: *t = "Cache 3rd-level cache: 2 MByte, 16-way set associative, 64 byte line size"; break;
+    case 0xE3: *t = "Cache 3rd-level cache: 4 MByte, 16-way set associative, 64 byte line size"; break;
+    case 0xE4: *t = "Cache 3rd-level cache: 8 MByte, 16-way set associative, 64 byte line size"; break;
+    case 0xEA: *t = "Cache 3rd-level cache: 12MByte, 24-way set associative, 64 byte line size"; break;
+    case 0xEB: *t = "Cache 3rd-level cache: 18MByte, 24-way set associative, 64 byte line size"; break;
+    case 0xEC: *t = "Cache 3rd-level cache: 24MByte, 24-way set associative, 64 byte line size"; break;
+    case 0xF0: *t = "Prefetch 64-Byte prefetching"; break;
+    case 0xF1: *t = "Prefetch 128-Byte prefetching"; break;
+    case 0xFE: *t = "General CPUID leaf 2 does not report TLB descriptor information; use CPUID leaf 18H to query TLB and other address translation parameters. "; break;
+    case 0xFF: *t = "General CPUID leaf 2 does not report cache descriptor information, use CPUID leaf 4 to query cache parameters"; break;
+    default: return false;
+    }
+
+    return true;
+}
+
 
 void x64PrintFeatureSet(struct X64Info* cpuid) {
     if (cpuid->feature1 & X64_FEATURE_FLAG_ECX_SSE3)            printf("\tSSE3\n");
@@ -286,6 +407,47 @@ bool getCpuidInfo(struct X64Info* cpuid) {
         
         cpuid->feature1 = result.ecx;
         cpuid->feature2 = result.edx;
+
+    }
+
+    // -------------------------------------------------
+    //                      Leaf 2
+    // -------------------------------------------------
+
+    { 
+        const uint32_t leaf = 2;
+        struct X64CpuidResult result = {};
+        executeCpuidWithLeaf(leaf, &result);
+
+#define CPUID_HAS_DESCRIPTOR_FLAG (1 << 31)
+
+        uint32_t* descriptorRegs = (uint32_t*)&result;
+        uint8_t* descriptors = (uint8_t*)&result;
+        for (uint32_t reg = 0; reg < 4; reg++) {
+            // Check if register contains valid info (bit 31 = 0) or is reserved (bit 31 = 1)
+            if (descriptorRegs[reg] & CPUID_HAS_DESCRIPTOR_FLAG) {
+                continue;
+            }
+
+            for (uint32_t b = 0; b < 4; b++) {
+                // Ignore LSB Byte in EAX because it is always 0x01
+                if (reg == 0 && b == 0) {
+                    continue;
+                }
+
+                uint8_t descriptor = descriptors[(reg * 4) + b];
+                if (descriptor == 0) {
+                    continue;
+                }
+
+                char* descString = 0;
+                bool validDesc = x64TranslateLeaf2Descriptor(descriptor, &descString);
+                if (validDesc) {
+                    printf("\t%s\n", descString);
+                }
+            }
+        }
+        printf("\n");
 
     }
 

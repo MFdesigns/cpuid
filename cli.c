@@ -50,7 +50,7 @@ int main() {
     printf("\tProcessor Type: %s\n", processorTypeStr);
 
     char* brandString = 0;
-    bool validBrandIndex = x64TranslateBrandIndex(cpuid.brandIndex, brandString);
+    bool validBrandIndex = x64TranslateBrandIndex(cpuid.brandIndex, &brandString);
     if (validBrandIndex) {
         printf("\t%s\n", brandString);
     }
@@ -63,4 +63,7 @@ int main() {
 
     printf("\nFeature Set:\n");
     x64PrintFeatureSet(&cpuid);
+
+
+    printf("Leaf 2H:\n");
 }
