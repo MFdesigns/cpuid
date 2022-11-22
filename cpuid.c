@@ -98,16 +98,16 @@ struct X64Info {
     uint32_t    feature2;
     char        brandString[CPUID_BRAND_STRING_SIZE];
 
-    bool        hasExtendedLeaf;
+    bool        hasExtendedInfo;
     uint32_t    maxExtendedLeaf;
 
 };
 
 struct X64CpuidResult {
-    uint32_t eax;
-    uint32_t ebx;
-    uint32_t ecx;
-    uint32_t edx;
+        uint32_t eax;
+        uint32_t ebx;
+        uint32_t ecx;
+        uint32_t edx;
 };
 
 // TODO: this function might be optimized out by the compiler
