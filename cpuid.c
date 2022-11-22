@@ -98,6 +98,9 @@ struct X64Info {
     uint32_t    feature2;
     char        brandString[CPUID_BRAND_STRING_SIZE];
 
+    bool        hasExtendedLeaf;
+    uint32_t    maxExtendedLeaf;
+
 };
 
 struct X64CpuidResult {
@@ -451,14 +454,22 @@ bool getCpuidInfo(struct X64Info* cpuid) {
 
     }
 
+    // -------------------------------------------------
+    //                      Extended
+    // -------------------------------------------------
+
     {
         const uint32_t leaf = 0x80000000;
         struct X64CpuidResult result = {};
         executeCpuidWithLeaf(leaf, &result);
 
-        if ((result.eax & leaf) && result.eax >= 0x80000004) {
-            uint32_t startLeaf = 0x80000002;
+        cpuid->hasExtendedInfo = result.eax & leaf;
+        cpuid->maxExtendedLeaf = result.eax;
+    }
 
+    {
+        uint32_t startLeaf = 0x80000002;
+        if (cpuid->hasExtendedInfo && cpuid->maxExtendedLeaf >= 0x80000004) {
             char* brandStringCursor = cpuid->brandString;
             for (uint32_t i = 0; i < 3; i++) {
                 struct X64CpuidResult result2 = {};
